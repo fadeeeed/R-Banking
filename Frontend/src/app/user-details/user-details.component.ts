@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,Input} from '@angular/core';
 import { HttpRequestService } from '../Services/http-request.service';
 import { environment } from 'src/environments/environment';
+import {SharingService} from '../Services/sharing.service';
 import {
   NgForm,
   FormBuilder,
@@ -16,12 +17,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-details.component.scss']
 })
 export class UserDetailsComponent implements OnInit {
+  
   registerForm: FormGroup;
   submitted = false;
   show=true;
   constructor(private http:HttpRequestService,
     private fb: FormBuilder,
-    private router:Router) { }
+    private router:Router,
+    private share:SharingService
+    ) { }
     id:any;
     acc_no:any;
     Name:any;
@@ -33,6 +37,7 @@ export class UserDetailsComponent implements OnInit {
       return this.registerForm.controls;
     }
   ngOnInit(): void {
+    console.log(this.share.getData());
     this.registerForm = this.fb.group(
       {
         customerId:['',Validators.required],
@@ -60,16 +65,7 @@ export class UserDetailsComponent implements OnInit {
   }
   onSubmit(){
     if(this.show){
-      let url=environment.localurl+'/RBanking/addBalance'
-      let data={
-        "customerId":1604583511004,
-        "balance":this.inputAmount
-      }
-      this.http.posthttpRequest(url,data).subscribe((resonse:any)=>{
-        console.log(resonse);
-      })
-      this.ngOnInit();
-      this.inputAmount=null;
+      
     }
     else{
       let url=environment.localurl+'/RBanking/withdraw';
@@ -79,8 +75,9 @@ export class UserDetailsComponent implements OnInit {
     }
     this.http.posthttpRequest(url,data).subscribe((response:any)=>{
       console.log(response);
+      this.ngOnInit();
     })
-    this.ngOnInit();
+    
     this.inputAmount=null;
     }
     
@@ -90,11 +87,29 @@ export class UserDetailsComponent implements OnInit {
     this.router.navigate(['/login']);
   }
   addClick(){
-    this.show=true;
-    this.buttonName="Add Amount";
-  }
+    let url=environment.localurl+'/RBanking/addBalance'
+      let data={
+        "customerId":1604583511004,
+        "balance":this.inputAmount
+      }
+      this.http.posthttpRequest(url,data).subscribe((resonse:any)=>{
+        console.log(resonse);
+        this.ngOnInit();
+      })
+      
+      this.inputAmount=null;
+    }
   withdrawClick(){
-    this.show=false;
-    this.buttonName="Withdraw Amount";
+    let url=environment.localurl+'/RBanking/withdraw';
+    let data={
+    "customerId":1604583511004,
+    "balance":this.inputAmount
+  }
+  this.http.posthttpRequest(url,data).subscribe((response:any)=>{
+    console.log(response);
+    this.ngOnInit();
+  })
+  
+  this.inputAmount=null;
   }
 }

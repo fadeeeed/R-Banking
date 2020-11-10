@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpRequestService } from '../Services/http-request.service';
 import { AuthenticationService } from '../Services/authentication.service';
 import { environment } from 'src/environments/environment';
+import {SharingService} from '../Services/sharing.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-login',
@@ -13,13 +13,14 @@ import Swal from 'sweetalert2';
 })
 export class LoginComponent {
   model: any = {};
-
+  
   errorMessage: string;
   constructor(
     private _auth: AuthenticationService,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private httpService: HttpRequestService
+    private httpService: HttpRequestService,
+    private share:SharingService
   ) {
     if (this._auth.loggedIn) {
       //this.router.navigate(['home']);
@@ -35,6 +36,7 @@ export class LoginComponent {
   inputPassword: any;
   UserNameValue(event: any) {
     this.inputUserName = (<HTMLInputElement>event.target).value;
+    this.share.setData(this.inputUserName);
   }
   passwordValue(event: any) {
     this.inputPassword = (<HTMLInputElement>event.target).value;

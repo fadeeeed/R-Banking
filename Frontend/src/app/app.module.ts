@@ -13,6 +13,8 @@ import { UserDetailsComponent } from './user-details/user-details.component';
 
 
 import {ButtonModule} from 'primeng/button';
+import {TabViewModule} from 'primeng/tabview';
+import { SharingService } from './Services/sharing.service';
 
 @NgModule({
   declarations: [
@@ -28,9 +30,10 @@ import {ButtonModule} from 'primeng/button';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    ButtonModule
+    ButtonModule,
+    TabViewModule
   ],
-  providers: [],
+  providers: [SharingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
