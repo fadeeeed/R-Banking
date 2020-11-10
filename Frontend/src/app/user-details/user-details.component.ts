@@ -9,6 +9,7 @@ import {
   FormControl,
 } from '@angular/forms';
 import { env } from 'process';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-user-details',
   templateUrl: './user-details.component.html',
@@ -19,13 +20,15 @@ export class UserDetailsComponent implements OnInit {
   submitted = false;
   show=true;
   constructor(private http:HttpRequestService,
-    private fb: FormBuilder,) { }
+    private fb: FormBuilder,
+    private router:Router) { }
     id:any;
     acc_no:any;
     Name:any;
     Email:any;
     Contact:any;
     Balance:any;
+    buttonName:string="Add Amount";
     get registerFormControl() {
       return this.registerForm.controls;
     }
@@ -65,6 +68,8 @@ export class UserDetailsComponent implements OnInit {
       this.http.posthttpRequest(url,data).subscribe((resonse:any)=>{
         console.log(resonse);
       })
+      this.ngOnInit();
+      this.inputAmount=null;
     }
     else{
       let url=environment.localurl+'/RBanking/withdraw';
@@ -75,7 +80,21 @@ export class UserDetailsComponent implements OnInit {
     this.http.posthttpRequest(url,data).subscribe((response:any)=>{
       console.log(response);
     })
-    }
     this.ngOnInit();
+    this.inputAmount=null;
+    }
+    
+    
+  }
+  signout(){
+    this.router.navigate(['/login']);
+  }
+  addClick(){
+    this.show=true;
+    this.buttonName="Add Amount";
+  }
+  withdrawClick(){
+    this.show=false;
+    this.buttonName="Withdraw Amount";
   }
 }

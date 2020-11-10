@@ -3,14 +3,22 @@
     width: 100%;
     margin-top:10%;
 }
+// .user-details{
+//     width: 100%;
+//     border-radius: 15px 10px 30px 15px;
+//     box-shadow: 0 0 10px 1px black;
+//     margin-left:10px;
+// }
+::ng-deep .p-button.p-button-secondary.p-button-text{
+    border:3px;
+    border-color: black;
+    border-width: 2px;
+}
+::ng-deep .p-button{
+    border:3px;
+    border-color: black;
+}
+::selection .p-button.p-button-secondary.p-button-text{
+    background-color: red;
+}
 
-.buttons{
-    margin:5%;
-    margin-left:0;
-}
-.p-button{
-    color:white;
-}
-.card-header{
-   display: flex;
-}

@@ -1,26 +1,72 @@
 <div class="container">
     <div class="row details">
         <div class="col-md-6">
-            <div class=" user-details">
-                <div class="row">
-                    <h3>Customer ID:  {{id}}</h3>
-                </div>
-                <div class="row">
-                    <h3>Account Number: {{acc_no}}</h3>
-                </div>
-                <div class="row">
-                    <h3>Name: {{Name}}</h3>
-                </div>
-                <div class="row">
-                    <h3>Email: {{Email}}</h3>
-                </div>
-                <div class="row">
-                    <h3>Mobile Number: {{Contact}}</h3>
-                </div>
-                <div class="row">
-                    <h3>Balance Amount: {{Balance}}</h3>
-                </div>
+          <div class="row">
+            <div class="col">
+              <!-- <h2 style="font-family: 'Dancing Script', cursive;" class="text-center">
+                User Record
+              </h2> -->
             </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div
+                class="table-responsive table mt-2"
+                role="grid"
+                aria-describedby="dataTable_info"
+              >
+                <table class="table my-0" id="dataTable-1">
+                  <tbody>
+                    <tr>
+                      <td>Customer ID:</td>
+                      <td>{{ id }}</td>
+
+
+                    </tr>
+                    <tr>
+                      <td>Account Number:</td>
+                      <td>{{ acc_no }}</td>
+
+
+                    </tr>
+                    <tr>
+                      <td>Name:</td>
+                      <td>{{ Name }}</td>
+
+
+                    </tr>
+                    <tr>
+                      <td>Email:</td>
+                      <td>{{ Email }}</td>
+
+
+                    </tr>
+                    <tr>
+                      <td>Contact:</td>
+                      <td>{{ Contact}}</td>
+
+
+                    </tr>
+                    <tr>
+                      <td>Current Balance:</td>
+                      <td>{{ Balance }}</td>
+
+
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+
+
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr></tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-md-6">
             <div class="">
@@ -29,9 +75,9 @@
                       <div class="col-md-8 mx-auto">
                         <div class="card">
                           <div class="card-header">
-                            <button class="buttons" pButton type="button" label="Add Balance" (click)="show=true" ></button>
+                            <button class="p-button-secondary p-button-text" pButton type="button" label="Add Balance" (click)="addClick()"></button>
                       
-                            <button class="buttons" pButton type="button" label="Withdraw" (click)="show=false" ></button>
+                            <button class="buttons p-button-secondary p-button-text" pButton type="button" label="Withdraw" (click)="withdrawClick()" ></button>
                           </div>
                           <div class="card-body">
                             <form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -58,7 +104,10 @@
                               </div>
                               
                               <div class="form-group">
-                                <button type="submit" class="btn btn-success">Register</button>
+                                <button type="submit" class="btn btn-success">{{buttonName}}</button>
+                              </div>
+                              <div class="form-group">
+                                <button  class="btn btn-error" (click)="signout()">Sign Out</button>
                               </div>
                             </form>
                           </div>

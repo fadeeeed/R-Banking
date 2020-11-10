@@ -41,7 +41,7 @@ export class LoginComponent {
   }
   url: any;
   login() {
-   this.url=environment.localurl+'RBanking/login';
+   this.url=environment.localurl+'/RBanking/login';
    let data={
     "email":this.inputUserName,
     "password":this.inputPassword
