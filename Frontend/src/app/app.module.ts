@@ -11,6 +11,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './register/register.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 
+
+import {ButtonModule} from 'primeng/button';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +27,8 @@ import { UserDetailsComponent } from './user-details/user-details.component';
     NgxSpinnerModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule 
+    ReactiveFormsModule,
+    ButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

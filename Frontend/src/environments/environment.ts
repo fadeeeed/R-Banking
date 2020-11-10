@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  localurl: 'http://localhost:8080/BankingSystem/'
+  localurl: 'http://localhost:8080/BankingSystem'
 };
 
 /*

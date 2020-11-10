@@ -1,7 +1,7 @@
 <div class="container">
-    <div class="row">
+    <div class="row details">
         <div class="col-md-6">
-            <div class="container">
+            <div class=" user-details">
                 <div class="row">
                     <h3>Customer ID:  {{id}}</h3>
                 </div>
@@ -20,6 +20,48 @@
                 <div class="row">
                     <h3>Balance Amount: {{Balance}}</h3>
                 </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="">
+                <div class="container">
+                    <div class="row">
+                      <div class="col-md-8 mx-auto">
+                        <div class="card">
+                          <div class="card-header">
+                            <button class="buttons" pButton type="button" label="Add Balance" ></button>
+                            <button class="buttons" pButton type="button" label="Withdraw" ></button>
+                          </div>
+                          <div class="card-body">
+                            <form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                    
+                              <div class="form-group">
+                                <label>Amount</label>
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="amount"
+                                />
+                                <span
+                                  class="text-danger"
+                                  *ngIf="
+                                    (registerFormControl.amount.touched || submitted) &&
+                                    registerFormControl.amount.errors?.required
+                                  "
+                                >
+                                   Enter Amount
+                                </span>
+                              </div>
+                              
+                              <div class="form-group">
+                                <button type="submit" class="btn btn-success">Register</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             </div>
         </div>
     </div>

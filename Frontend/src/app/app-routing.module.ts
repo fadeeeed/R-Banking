@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 
 const routes: Routes = [
@@ -17,6 +18,13 @@ const routes: Routes = [
     component:UserDetailsComponent,
     data:{
       title:'User Details',
+    },
+  },
+  {
+    path:'register',
+    component:RegisterComponent,
+    data:{
+      title:'Register User',
     },
   }
 ];

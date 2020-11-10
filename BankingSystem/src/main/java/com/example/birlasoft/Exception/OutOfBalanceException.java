@@ -8,13 +8,13 @@ package com.example.birlasoft.Exception;
  *
  */
 
-public class OutOfBalance extends Exception {
+public class OutOfBalanceException extends RuntimeException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4263376762628814809L;
 	String str;
-	OutOfBalance(String str){
+	public OutOfBalanceException(String str){
 		this.str=str;
 	}
 	public String toString() {

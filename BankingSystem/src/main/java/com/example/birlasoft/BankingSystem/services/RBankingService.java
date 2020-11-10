@@ -3,15 +3,18 @@ package com.example.birlasoft.BankingSystem.services;
 import com.example.birlasoft.BankingSystem.dao.DatabaseConnection;
 import com.example.birlasoft.BankingSystem.dao.*;
 import com.example.birlasoft.BankingSystem.entity.RBankingDetails;
-import com.example.birlasoft.BankingSystem.entity.addBalanceEntity;
+// com.example.birlasoft.BankingSystem.entity.SetResponseEntity;
+import com.example.birlasoft.BankingSystem.entity.AddWithdrawBalanceEntity;
 import com.example.birlasoft.BankingSystem.utils.AppConstants;
+import com.example.birlasoft.Exception.OutOfBalanceException;
 
-
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -89,7 +92,7 @@ public class RBankingService implements AppConstants{
 		return details;
 	}
 	
-	public String addBalanceAmount(addBalanceEntity add) throws SQLException {
+	public String addBalanceAmount(AddWithdrawBalanceEntity add) throws SQLException {
 		Connection con=null;
 		String msg=null;
 		try {
@@ -101,13 +104,14 @@ public class RBankingService implements AppConstants{
 			
 			
 			if (line >0) {
-				System.out.println(line + " Lines Updated");
+				msg="Amount Added Successfully";
 			} else {
 				msg = "Error! There is Some Error in user registration.";
 			}
 
 		}
 		catch(Exception e) {
+			msg="Server Error";
 			System.out.println("Adding Balance Interrupted");
 		}
 		finally {
@@ -116,21 +120,31 @@ public class RBankingService implements AppConstants{
 		return msg;
 	}
 	
-	public String withdrawAmount(addBalanceEntity withdraw) throws SQLException {
+	public int withdrawAmount(AddWithdrawBalanceEntity withdraw) throws SQLException ,OutOfBalanceException{
 		Connection con=null;
-		String msg=null;
+		int code=401;
 		try {
 			con=DatabaseConnection.getConnection();
-			PreparedStatement stmt=con.prepareStatement(DBQueryServiceInterface.withdrawQuery);
-			stmt.setDouble(1,withdraw.getBalance());
-			stmt.setString(2, Long.toString(withdraw.getCustomerId()));
-			int line = stmt.executeUpdate();
+			CallableStatement stmt=con.prepareCall(DBQueryServiceInterface.withdrawQuery);
+			stmt.setString(1, Long.toString(withdraw.getCustomerId()));
+			stmt.setDouble(2,withdraw.getBalance());
 			
+			stmt.registerOutParameter(3, Types.DOUBLE);
+			stmt.registerOutParameter(4, Types.INTEGER);
+			ResultSet rs=stmt.executeQuery();
 			
-			if (line >0) {
-				System.out.println(line + " Lines Updated");
-			} else {
-				msg = "Error! There is Some Error in user registration.";
+			if(rs.next()) {
+				int responseCode=rs.getInt("response_code");
+				System.out.println(responseCode);
+				if(responseCode==200) {
+					code=200;
+				}
+				else if(responseCode==402) {
+					throw new OutOfBalanceException("Insufficient Balance");
+				}
+				else {
+					code=401;
+				}
 			}
 
 		}
@@ -140,7 +154,7 @@ public class RBankingService implements AppConstants{
 		finally {
 			DatabaseConnection.closeConnection(con);
 		}
-		return msg;
+		return code;
 	}
 	
 	public String loginBankUser(RBankingDetails login) throws SQLException {

@@ -35,13 +35,9 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
     this.registerForm = this.fb.group(
       {
-        firstname: ['', Validators.required],
-        lastname: ['', Validators.required],
-        username: [
-          '',
-          [Validators.required],
-          this.customValidator.userNameValidator.bind(this.customValidator),
-        ],
+        name: ['', Validators.required],
+        email: ['', Validators.required],
+        contact:['',Validators.required],
         password: [
           '',
           Validators.compose([
@@ -69,25 +65,15 @@ export class RegisterComponent implements OnInit {
     this.submitted = true;
     if (this.registerForm.valid) {
       let data = {
-        firstName: this.registerForm.value.firstname,
-        lastName: this.registerForm.value.lastname,
-        userName: this.registerForm.value.username,
+        name: this.registerForm.value.name,
+        email: this.registerForm.value.email,
+        contact: this.registerForm.value.contact.toString(),
         password: this.registerForm.value.password,
-        userRole: 'U',
-        userLoginStatus: 'A',
       };
-      let url = environment.localurl + '/loginservices/signup';
+      let url = environment.localurl + '/RBanking/createAccount';
       this.httpService.posthttpRequest(url, data).subscribe((response: any) => {
-        this.spinner.hide();
-        if (response.responseBody.includes('Success')) {
-          this.router.navigate(['/open']);
-        } else {
-          Swal.fire('', response.responseBody, 'error');
-        }
+        console.log(response);
       });
-      setTimeout(() => {
-        this.spinner.hide();
-      }, 5000);
     }
-  }
+  };
 }

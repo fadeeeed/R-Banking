@@ -1,6 +1,6 @@
 package com.example.birlasoft.BankingSystem.entity;
 
-public class addBalanceEntity {
+public class AddWithdrawBalanceEntity {
 	private long customerId;
 	private double balance;
 	
@@ -16,5 +16,4 @@ public class addBalanceEntity {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
-	
 }

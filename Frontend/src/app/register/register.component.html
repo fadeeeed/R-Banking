@@ -1,12 +1,3 @@
-<ngx-spinner
-  bdColor="rgba(0, 0, 0, 0.8)"
-  size="medium"
-  color="#fff"
-  type="square-jelly-box"
-  [fullScreen]="true"
-  ><p style="color: white;">Loading...</p></ngx-spinner
->
-
 <div class="container">
   <div class="row">
     <div class="col-md-8 mx-auto">
@@ -17,64 +8,54 @@
         <div class="card-body">
           <form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-              <label>First Name</label>
+              <label>Name</label>
               <input
                 type="text"
                 class="form-control"
-                formControlName="firstname"
+                formControlName="name"
               />
               <span
                 class="text-danger"
                 *ngIf="
-                  (registerFormControl.firstname.touched || submitted) &&
-                  registerFormControl.firstname.errors?.required
+                  (registerFormControl.name.touched || submitted) &&
+                  registerFormControl.name.errors?.required
                 "
               >
-                First Name is required
+                Name is required
               </span>
             </div>
             <div class="form-group">
-              <label>Last Name</label>
+              <label>Email</label>
               <input
                 type="text"
                 class="form-control"
-                formControlName="lastname"
+                formControlName="email"
               />
               <span
                 class="text-danger"
                 *ngIf="
-                  (registerFormControl.lastname.touched || submitted) &&
-                  registerFormControl.lastname.errors?.required
+                  (registerFormControl.email.touched || submitted) &&
+                  registerFormControl.email.errors?.required
                 "
               >
-                Last Name is required
+                Email is required
               </span>
             </div>
-
             <div class="form-group">
-              <label>User Name</label>
+              <label>Contact</label>
               <input
-                type="text"
+                type="number"
                 class="form-control"
-                formControlName="username"
+                formControlName="contact"
               />
               <span
                 class="text-danger"
                 *ngIf="
-                  (registerFormControl.username.touched || submitted) &&
-                  registerFormControl.username.errors?.required
+                  (registerFormControl.contact.touched || submitted) &&
+                  registerFormControl.contact.errors?.required
                 "
               >
-                User Name is required
-              </span>
-              <span
-                class="text-danger"
-                *ngIf="
-                  registerFormControl.username.touched &&
-                  registerFormControl.username.errors?.userNameNotAvailable
-                "
-              >
-                User Name is not available
+                Contact is required
               </span>
             </div>
             <div class="form-group">

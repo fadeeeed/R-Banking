@@ -1,22 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpRequestService } from '../Services/http-request.service';
 import { environment } from 'src/environments/environment';
+import {
+  NgForm,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 @Component({
   selector: 'app-user-details',
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss']
 })
 export class UserDetailsComponent implements OnInit {
-
-  constructor(private http:HttpRequestService) { }
+  registerForm: FormGroup;
+  submitted = false;
+  constructor(private http:HttpRequestService,
+    private fb: FormBuilder,) { }
     id:any;
     acc_no:any;
     Name:any;
     Email:any;
     Contact:any;
     Balance:any;
-
+    get registerFormControl() {
+      return this.registerForm.controls;
+    }
   ngOnInit(): void {
+    this.registerForm = this.fb.group(
+      {
+        customerId:['',Validators.required],
+        amount:['',Validators.required]
+      }
+    );
+
     
 
     let url = environment.localurl + '/RBanking/getDetails?customerId=1604583511004';
@@ -30,5 +48,25 @@ export class UserDetailsComponent implements OnInit {
       console.log(responseData);
     });
   }
-
+  addAmount(){
+    let url=environment.localurl+'/RBanking/addBalance';
+    let data={
+      "customerId":1604583511004,
+      "balance":100
+    }
+    this.http.posthttpRequest(url,data).subscribe((resonse:any)=>{
+      console.log(resonse);
+    })
+  }
+  withdraw(){
+    let url=environment.localurl+'/RBanking/withdraw';
+    let data={
+      "customerId":1604583511004,
+      "balance":100
+    }
+    this.http.posthttpRequest(url,data).subscribe((response:any)=>{
+      console.log(response);
+    })
+  }
+  onSubmit(){}
 }
