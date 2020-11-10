@@ -8,6 +8,7 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
+import { env } from 'process';
 @Component({
   selector: 'app-user-details',
   templateUrl: './user-details.component.html',
@@ -16,6 +17,7 @@ import {
 export class UserDetailsComponent implements OnInit {
   registerForm: FormGroup;
   submitted = false;
+  show=true;
   constructor(private http:HttpRequestService,
     private fb: FormBuilder,) { }
     id:any;
@@ -48,25 +50,32 @@ export class UserDetailsComponent implements OnInit {
       console.log(responseData);
     });
   }
-  addAmount(){
-    let url=environment.localurl+'/RBanking/addBalance';
-    let data={
-      "customerId":1604583511004,
-      "balance":100
-    }
-    this.http.posthttpRequest(url,data).subscribe((resonse:any)=>{
-      console.log(resonse);
-    })
+  inputAmount:number;
+  UserNameValue(event: any) {
+    this.inputAmount = +(<HTMLInputElement>event.target).value;
+    console.log(this.inputAmount);
   }
-  withdraw(){
-    let url=environment.localurl+'/RBanking/withdraw';
-    let data={
+  onSubmit(){
+    if(this.show){
+      let url=environment.localurl+'/RBanking/addBalance'
+      let data={
+        "customerId":1604583511004,
+        "balance":this.inputAmount
+      }
+      this.http.posthttpRequest(url,data).subscribe((resonse:any)=>{
+        console.log(resonse);
+      })
+    }
+    else{
+      let url=environment.localurl+'/RBanking/withdraw';
+      let data={
       "customerId":1604583511004,
-      "balance":100
+      "balance":this.inputAmount
     }
     this.http.posthttpRequest(url,data).subscribe((response:any)=>{
       console.log(response);
     })
+    }
+    this.ngOnInit();
   }
-  onSubmit(){}
 }

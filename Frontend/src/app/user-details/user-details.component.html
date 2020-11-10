@@ -29,8 +29,9 @@
                       <div class="col-md-8 mx-auto">
                         <div class="card">
                           <div class="card-header">
-                            <button class="buttons" pButton type="button" label="Add Balance" ></button>
-                            <button class="buttons" pButton type="button" label="Withdraw" ></button>
+                            <button class="buttons" pButton type="button" label="Add Balance" (click)="show=true" ></button>
+                      
+                            <button class="buttons" pButton type="button" label="Withdraw" (click)="show=false" ></button>
                           </div>
                           <div class="card-body">
                             <form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -40,7 +41,10 @@
                                 <input
                                   type="number"
                                   class="form-control"
+              
                                   formControlName="amount"
+                                  (input)="UserNameValue($event)"
+                                  
                                 />
                                 <span
                                   class="text-danger"
