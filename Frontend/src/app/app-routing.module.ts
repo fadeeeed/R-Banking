@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { AuthGuardService } from './Services/auth-guard.service';
 
 const routes: Routes = [
   {
@@ -22,18 +22,13 @@ const routes: Routes = [
   },
   {
     path:'userDetails',
+    canActivate: [AuthGuardService],
     component:UserDetailsComponent,
     data:{
       title:'User Details',
     },
   },
-  {
-    path:'register',
-    component:RegisterComponent,
-    data:{
-      title:'Register User',
-    },
-  }
+  
 ];
 
 @NgModule({

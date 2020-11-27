@@ -29,15 +29,19 @@ import com.example.birlasoft.Exception.OutOfBalanceException;
 @CrossOrigin
 public class RBankingController {
 	@PostMapping("/createAccount")
-	public void createUserAccount(@RequestBody RBankingDetails accountDetails) {
+	public List<SetResponseEntity> createUserAccount(@RequestBody RBankingDetails accountDetails) {
+		SetResponseEntity entity=new SetResponseEntity();
+		List<SetResponseEntity> response=new ArrayList<SetResponseEntity>();
 		try {
 			RBankingService bankingService = new RBankingService();
-			bankingService.createAccount(accountDetails);
-			System.out.println("AccountCreated");
+			response=bankingService.createAccount(accountDetails);
+			
 			System.out.println(accountDetails.getName());
 		} catch (Exception e) {
-			System.out.println("Try Again");
+			entity.setMsg("Error While Registering in Controller");
+			entity.setResponseCode(401);
 		}
+		return response;
 	}
 	@GetMapping("/getDetails")
 	public List<RBankingDetails> getUserDetails(@RequestParam long customerId ) {
@@ -53,29 +57,18 @@ public class RBankingController {
 	}
 	
 	@PostMapping("/addBalance")
-	public int addBalance (@RequestBody AddWithdrawBalanceEntity add) {
-		String msg=null;
-		int code=-1;
+	public List<SetResponseEntity> addBalance (@RequestBody AddWithdrawBalanceEntity add) {
+		List<SetResponseEntity> response=new ArrayList<SetResponseEntity>();
+		SetResponseEntity entity=new SetResponseEntity();
 		try {
 			RBankingService bankingService = new RBankingService();
-			msg=bankingService.addBalanceAmount(add);
-			
-			// If Balance is Updated Successfully
-			if(msg=="Amount Added Successfully") {
-				code=1;
-			}
-			else if(msg=="Error! There is Some Error in user registration."){
-				code=0;
-			}
-			else {
-				code=-1;
-			}
+			response=bankingService.addBalanceAmount(add);
 		}
 		catch(Exception e) {
-			e.printStackTrace();
-			code=-1;
+			entity.setMsg("Error while Adding Balance");
+			entity.setResponseCode(401);
 		}
-		return code;
+		return response;
 	}
 	
 	@PostMapping("/withdraw")
@@ -107,23 +100,18 @@ public class RBankingController {
 	}
 	
 	@PostMapping("/login")
-	public int loginUser(@RequestBody RBankingDetails login) {
-		int code;
+	public List<SetResponseEntity> loginUser(@RequestBody RBankingDetails login) {
 		
+		List<SetResponseEntity> response=new ArrayList<SetResponseEntity>();
+		SetResponseEntity entity=new SetResponseEntity();
 		try {
 			RBankingService bankingService = new RBankingService();
-			String msg=bankingService.loginBankUser(login);
-			if(msg=="Login Successful") {
-				code=1;
-			}
-			else {
-				code=0;
-			}
+			response=bankingService.loginBankUser(login);
 		}
 		catch(Exception e) {
-			code=-1;
-			e.printStackTrace();
+			entity.setMsg("Error While Login");
+			entity.setResponseCode(401);
 		}
-		return code;
+		return response;
 	}
 }

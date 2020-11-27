@@ -9,15 +9,15 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
-import { env } from 'process';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-user-details',
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss']
 })
 export class UserDetailsComponent implements OnInit {
-  
+  //customerId:any=sessionStorage.setItem('customer_id',this.share.getData());
   registerForm: FormGroup;
   submitted = false;
   show=true;
@@ -36,8 +36,8 @@ export class UserDetailsComponent implements OnInit {
     get registerFormControl() {
       return this.registerForm.controls;
     }
+    
   ngOnInit(): void {
-    console.log(this.share.getData());
     this.registerForm = this.fb.group(
       {
         customerId:['',Validators.required],
@@ -46,8 +46,10 @@ export class UserDetailsComponent implements OnInit {
     );
 
     
+    
 
-    let url = environment.localurl + '/RBanking/getDetails?customerId=1604583511004';
+    let url = environment.localurl + '/RBanking/getDetails?customerId='.concat(sessionStorage.getItem('customer_id'));
+    console.log(url);
     this.http.gethttpResponse(url,null).subscribe((responseData:any)=>{
       this.id=responseData[0].customerId;
       this.acc_no=responseData[0].accountNumber;
@@ -55,7 +57,6 @@ export class UserDetailsComponent implements OnInit {
       this.Email=responseData[0].email;
       this.Contact=responseData[0].contactNumber;
       this.Balance=responseData[0].balance;
-      console.log(responseData);
     });
   }
   inputAmount:number;
@@ -63,33 +64,15 @@ export class UserDetailsComponent implements OnInit {
     this.inputAmount = +(<HTMLInputElement>event.target).value;
     console.log(this.inputAmount);
   }
-  onSubmit(){
-    if(this.show){
-      
-    }
-    else{
-      let url=environment.localurl+'/RBanking/withdraw';
-      let data={
-      "customerId":1604583511004,
-      "balance":this.inputAmount
-    }
-    this.http.posthttpRequest(url,data).subscribe((response:any)=>{
-      console.log(response);
-      this.ngOnInit();
-    })
-    
-    this.inputAmount=null;
-    }
-    
-    
-  }
+  onSubmit(){}
   signout(){
+    sessionStorage.clear();
     this.router.navigate(['/login']);
   }
   addClick(){
     let url=environment.localurl+'/RBanking/addBalance'
       let data={
-        "customerId":1604583511004,
+        "customerId":sessionStorage.getItem("customer_id"),
         "balance":this.inputAmount
       }
       this.http.posthttpRequest(url,data).subscribe((resonse:any)=>{
@@ -102,10 +85,16 @@ export class UserDetailsComponent implements OnInit {
   withdrawClick(){
     let url=environment.localurl+'/RBanking/withdraw';
     let data={
-    "customerId":1604583511004,
+    "customerId":sessionStorage.getItem("customer_id"),
     "balance":this.inputAmount
   }
   this.http.posthttpRequest(url,data).subscribe((response:any)=>{
+    if(response[0].responseCode==200){
+      Swal.fire('Success','Withdrawal Successful','success');
+    }
+    else if(response[0].responseCode==401){
+      Swal.fire('Insufficient Balance','','info');
+    }
     console.log(response);
     this.ngOnInit();
   })

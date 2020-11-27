@@ -3,7 +3,7 @@ package com.example.birlasoft.BankingSystem.services;
 import com.example.birlasoft.BankingSystem.dao.DatabaseConnection;
 import com.example.birlasoft.BankingSystem.dao.*;
 import com.example.birlasoft.BankingSystem.entity.RBankingDetails;
-// com.example.birlasoft.BankingSystem.entity.SetResponseEntity;
+import com.example.birlasoft.BankingSystem.entity.SetResponseEntity;
 import com.example.birlasoft.BankingSystem.entity.AddWithdrawBalanceEntity;
 import com.example.birlasoft.BankingSystem.utils.AppConstants;
 import com.example.birlasoft.Exception.OutOfBalanceException;
@@ -19,35 +19,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 public class RBankingService implements AppConstants{
-	public String createAccount(RBankingDetails accountDetails) throws ClassNotFoundException {
+	public List<SetResponseEntity>  createAccount(RBankingDetails accountDetails) throws ClassNotFoundException ,SQLException{
+		SetResponseEntity entity=new SetResponseEntity();
+		List<SetResponseEntity> response=new ArrayList<SetResponseEntity>();
 		Timestamp timestamp=new Timestamp(System.currentTimeMillis());
 		Random rand=new Random();
 		long customerId=timestamp.getTime();
 		long accountNumber=Long.parseLong(Integer.toString(AppConstants.bankId)+Long.toString(customerId)+Integer.toString(rand.nextInt(90)+10));
 		accountDetails.setAccountNumber(accountNumber);
 		accountDetails.setCustomerId(customerId);
+		double balance=0;
 		Connection con = null;  
-		String mesg = null;
+		
 		try {
 			con=DatabaseConnection.getConnection();
-			PreparedStatement stmt = con.prepareStatement(DBQueryServiceInterface.createAccountQuery);
+			CallableStatement stmt = con.prepareCall(DBQueryServiceInterface.createAccountQuery);
 			stmt.setString(1,Long.toString(accountDetails.getCustomerId()));
 			stmt.setString(2, accountDetails.getName());
 			stmt.setString(3, accountDetails.getEmail());
 			stmt.setString(4, Long.toString(accountDetails.getContactNumber()));
-			stmt.setString(5, accountDetails.getPassword());
-			stmt.setString(6, Long.toString(accountDetails.getAccountNumber()));
-			stmt.setString(7, Long.toString(0));
 			
-			int line = stmt.executeUpdate();
+			stmt.setString(5, Long.toString(accountDetails.getAccountNumber()));
+			stmt.setString(6, accountDetails.getPassword());
+			stmt.setDouble(7, balance);
+			stmt.registerOutParameter(8, Types.INTEGER);
+			
+			ResultSet rs=stmt.executeQuery();
 			
 			
-			if (line >0) {
-				System.out.println(line + " Lines Updated");
+			if (rs.next()) {
+				int responseCode=rs.getInt("response_code");
+				if(responseCode==200) {
+					entity.setMsg("Account Created");
+					entity.setResponseCode(200);
+					entity.setCustomerId(customerId);
+				}
+				else {
+					entity.setMsg("User Already Exists");
+					entity.setResponseCode(502);
+				}
+				
 			} else {
-				mesg = "Error! There is Some Error in user registration.";
+				entity.setMsg("Query fail");
+				entity.setResponseCode(401);
 			}
+			response.add(entity);
 		} catch (Exception e) {
+			entity.setMsg("Error while Registering in Service");
+			entity.setResponseCode(401);
+			response.add(entity);
 			e.printStackTrace();
 		} finally {
 			try {
@@ -57,7 +77,7 @@ public class RBankingService implements AppConstants{
 			}
 		}
 		
-		return mesg;
+		return response;
 		
 		}
 	
@@ -84,7 +104,7 @@ public class RBankingService implements AppConstants{
 		}
 		catch(Exception e) {
 			
-			System.out.println("User Details Successfully Fetched");
+			System.out.println("Error While Getting Details");
 		} finally {
 			DatabaseConnection.closeConnection(con);
 		}
@@ -92,9 +112,11 @@ public class RBankingService implements AppConstants{
 		return details;
 	}
 	
-	public String addBalanceAmount(AddWithdrawBalanceEntity add) throws SQLException {
+	public List<SetResponseEntity> addBalanceAmount(AddWithdrawBalanceEntity add) throws SQLException {
 		Connection con=null;
-		String msg=null;
+		
+		List<SetResponseEntity> response=new ArrayList<SetResponseEntity>();
+		SetResponseEntity entity=new SetResponseEntity();
 		try {
 			con=DatabaseConnection.getConnection();
 			PreparedStatement stmt=con.prepareStatement(DBQueryServiceInterface.addBalanceQuery);
@@ -104,20 +126,23 @@ public class RBankingService implements AppConstants{
 			
 			
 			if (line >0) {
-				msg="Amount Added Successfully";
+				entity.setMsg("Amount Added Successfully");
+				entity.setResponseCode(200);
 			} else {
-				msg = "Error! There is Some Error in user registration.";
+				entity.setMsg("Error While Quering");
+				entity.setResponseCode(401);
 			}
-
+			response.add(entity);
 		}
 		catch(Exception e) {
-			msg="Server Error";
-			System.out.println("Adding Balance Interrupted");
+			entity.setMsg("Error While Adding Amount");
+			entity.setResponseCode(401);
+			response.add(entity);
 		}
 		finally {
 			DatabaseConnection.closeConnection(con);
 		}
-		return msg;
+		return response;
 	}
 	
 	public int withdrawAmount(AddWithdrawBalanceEntity withdraw) throws SQLException ,OutOfBalanceException{
@@ -157,28 +182,38 @@ public class RBankingService implements AppConstants{
 		return code;
 	}
 	
-	public String loginBankUser(RBankingDetails login) throws SQLException {
+	public List<SetResponseEntity> loginBankUser(RBankingDetails login) throws SQLException {
 		Connection con=null;
-		String msg=null;
+		
+		List<SetResponseEntity> response=null;
+		SetResponseEntity entity=new SetResponseEntity();
 		try {
+			response=new ArrayList<SetResponseEntity>();
 			con=DatabaseConnection.getConnection();
 			PreparedStatement stmt=con.prepareStatement(DBQueryServiceInterface.userLogin);
 			stmt.setString(1, login.getEmail());
 			stmt.setString(2, login.getPassword());
 			ResultSet rs=stmt.executeQuery();
+			
 			if(rs.next()) {
-				msg="Login Successful";
+				entity.setMsg("Login Succesful");
+				entity.setResponseCode(200);
+				entity.setCustomerId(Long.parseLong(rs.getString("customer_id")));
 			}
 			else {
-				msg="Invalid Credentials !";
+				entity.setMsg("Invalid Cridentials");
+				entity.setResponseCode(401);
 			}
+			response.add(entity);
 		}
 		catch(Exception e) {
-			msg="Error while login";
+			entity.setMsg("Error While Login");
+			entity.setResponseCode(401);
+			response.add(entity);
 		}
 		finally {
 			DatabaseConnection.closeConnection(con);
 		}
-		return msg;
+		return response ;
 	}
 }

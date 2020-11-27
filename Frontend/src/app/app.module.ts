@@ -8,7 +8,6 @@ import { LoginComponent } from './login/login.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule,ReactiveFormsModule  } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { RegisterComponent } from './register/register.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 
 
@@ -20,7 +19,7 @@ import { SharingService } from './Services/sharing.service';
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent,
+    
     UserDetailsComponent,
   ],
   imports: [
